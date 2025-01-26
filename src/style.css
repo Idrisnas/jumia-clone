@@ -1,0 +1,155 @@
+/* Hide the arrows by default */
+.slick-prev, .slick-next {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+  background-color: gray;
+  color: white;
+  border-radius: 50%;
+  padding: 12px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  opacity: 0; /* Hide by default */
+  /* visibility: hidden; */
+   /* Hide by default */
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+}
+
+/* Make the arrows visible when hovering on the slider */
+.slick-slider:hover .slick-prev,
+.slick-slider:hover .slick-next {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Style for the previous arrow (rotated 180 degrees) */
+.slick-prev {
+  left: 10px;
+}
+
+.slick-next {
+  right: 10px;
+}
+
+.slick-prev .rotate-180 {
+  transform: rotate(180deg);
+}
+
+
+
+/* General styling for Product Interactions */
+.product-interactions {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Review Section */
+.reviews-section {
+  margin-bottom: 1.5rem;
+}
+
+.reviews-section h3 {
+  font-size: 20px;
+  margin-bottom: 0.5rem;
+}
+/* h2 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+  color: #333;
+} */
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+/* 
+button {
+  padding: 0.5rem 1rem;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #e65c00;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+} */
+
+/* Rating Section */
+.rating-section {
+  margin-bottom: 1.5rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 4px;
+}
+
+.star-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star-icon.active {
+  color: #ffcc00; /* Yellow for active stars */
+}
+
+button {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+/* Like Section */
+.like-section {
+  margin-bottom: 1.5rem;
+}
+
+.like-section button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.like-section button:hover {
+  background-color: #f4f4f4;
+}
+
+.like-section p {
+  font-size: 16px;
+  color: #333;
+}
+

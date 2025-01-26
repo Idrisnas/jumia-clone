@@ -1,0 +1,218 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  
+
+const Base_url = "http://ecommerce.reworkstaging.name.ng/v2";
+
+const Profile = () => {
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoginMode, setIsLoginMode] = useState(false); // Tracks if we are in login mode
+  const [userFound, setUserFound] = useState(false); // Tracks if email exists in the system
+  const navigate = useNavigate();  // Hook for navigation
+
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+  };
+
+  // Check if user exists by email
+  const checkUserExists = async (email) => {
+    try {
+      const response = await axios.get(`${Base_url}/users?email=${email}`);
+      return response.data && response.data.length > 0;
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      return false;
+    }
+  };
+
+  // Handle the Continue button click for Sign Up
+  const handleContinueSignUp = async () => {
+    if (!firstName || !lastName || !email || !phone || !password) {
+      setErrorMessage("All fields are required!");
+      return;
+    }
+
+    try {
+      await axios.post(`${Base_url}/users`, {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        password: password,
+      });
+      setErrorMessage('');
+      alert("User created successfully! Please login again.");
+      window.location.reload(); // Reload the page so the user can input email again
+    } catch (error) {
+      setErrorMessage('Error creating user');
+    }
+  };
+
+  // Handle Login button click
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorMessage("Email and password are required.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${Base_url}/users/login`, { email, password });
+      
+      if (response.data && response.data.msg === "Invalid username or password") {
+        setErrorMessage("Invalid username or password.");
+      } else {
+        setErrorMessage('');
+        // Store user data in localStorage
+        localStorage.setItem("user", JSON.stringify({
+          id: response.data.id,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          phone: response.data.phone,
+        }));
+        // Navigate to the home page after login
+        navigate('/home');
+      }
+    } catch (error) {
+      setErrorMessage("Error logging in.");
+    }
+  };
+
+  // Handle email check
+  const handleEmailCheck = async () => {
+    if (!email) {
+      setErrorMessage("Please enter your email.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    const userExists = await checkUserExists(email);
+    setUserFound(userExists);
+
+    if (userExists) {
+      setIsLoginMode(true); // If user exists, show password input for login
+    } else {
+      setIsLoginMode(false); // If user doesn't exist, show sign up form
+      setErrorMessage("User not found. Please sign up.");
+    }
+  };
+
+  return (
+    <div className="my-7 flex flex-col items-center mt-24 w-[90%] sm:w-[80%] m-auto p-6 rounded-lg shadow-lg">
+      <div className="my-2">
+        <img
+          src="https://my.jumia.com.ng/pictures/myjumia/myjumia-top-logo.png"
+          alt="Jumia Logo"
+          className="w-20"
+        />
+      </div>
+      <h1 className="text-2xl font-bold">Welcome to Jumia</h1>
+      <p className="text-center">
+        {userFound ? 'Please enter your password to log in.' : 'Please enter your email to check if you have an account.'}
+      </p>
+
+      <div className="bg-white p-8 rounded-lg shadow-lg w-[80%] max-w-lg my-2">
+        {errorMessage && <p className="text-red-500 text-center mb-2">{errorMessage}</p>}
+
+        {/* Email input (initial state) */}
+        {!isLoginMode && !userFound && (
+          <>
+            <div>
+              <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full p-4 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              />
+            </div>
+            <button
+              onClick={handleEmailCheck}
+              className="w-full bg-orange-500 text-white py-3 mt-4 rounded-md hover:bg-orange-600 transition duration-200"
+            >
+              Continue
+            </button>
+          </>
+        )}
+
+        {/* Sign-up form (if email is not found) */}
+        {!isLoginMode && !userFound && (
+          <>
+            <div>
+              <label htmlFor="firstName" className="block text-lg font-medium text-gray-700">First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter your first name"
+                className="w-full p-4 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="lastName" className="block text-lg font-medium text-gray-700">Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter your last name"
+                className="w-full p-4 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              />
+            </div>
+
+            <button
+              onClick={handleContinueSignUp}
+              className="w-full bg-orange-500 text-white py-3 mt-4 rounded-md hover:bg-orange-600 transition duration-200"
+            >
+              Continue
+            </button>
+          </>
+        )}
+
+        {/* Login form (if email is found) */}
+        {isLoginMode && (
+          <>
+            <div>
+              <label htmlFor="password" className="block text-lg font-medium text-gray-700">Password</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full p-4 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              />
+            </div>
+            <button
+              onClick={handleLogin}
+              className="w-full bg-orange-500 text-white py-3 mt-4 rounded-md hover:bg-orange-600 transition duration-200"
+            >
+              Login
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="leading-5 my-4 text-center">
+        <p className="text-center">By continuing you agree to Jumia’s</p>
+        <a href="#" className="underline text-orange-500">Terms and Conditions</a>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
