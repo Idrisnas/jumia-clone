@@ -260,12 +260,12 @@ const HomePage = () => {
         <SponsordProducts />
 
         <div className="">
-          <TopSeling />
+          {/* <TopSeling />
           <LimitedStock />
           <HolidaySales />
           <TopHoliday />
           <AppliancesDeals />
-          <TopAppliance />
+          <TopAppliance /> */}
 
           <div className="mb-3 w-[95%] m-auto bg-white p-1 flex gap-2">
             <Link className="relative w-full">
@@ -309,7 +309,7 @@ const HomePage = () => {
           </div>
 
           <EverthingMust />
-          <TopSeling />
+          {/* <TopSeling /> */}
           <div className="mb-3 w-[95%] m-auto bg-white p-1 flex gap-2">
             <Link className=" relative w-full">
               <div className="p-1 relative overflow-hidden rounded-lg shadow-md">
