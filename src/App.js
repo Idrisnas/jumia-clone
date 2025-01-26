@@ -1,12 +1,17 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 // import "./index.css"
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage";  // Ensure this is correctly imported
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
-import Help from "./pages/Help"; 
+import Help from "./pages/Help";
 import SignUp from "./pages/SignUp";
 import Electronics from "./pages/Electronics";
 import Admin from "./components/Admin";
@@ -26,26 +31,20 @@ import PhoneandTabs from "./pages/PhoneandTabs";
 import UpDiscount from "./pages/UpDiscount";
 import CheckOut from "./components/CheckOut";
 
-// This wrapper will check the current path
+// Layout Wrapper function
 function LayoutWrapper({ children }) {
   const location = useLocation();
-  
-
   const hideNavAndFooterPaths = [
-    '/signin', // Admin SignIn page
-    '/admin', // Admin Dashboard or Admin landing page
-    '/dashboard', // Admin Dashboard
-    '/category', // Admin Category management page
-    '/checkout', // Checkout page
-    '/profile', // Profile page
-    '/AddProduct'
+    "/signin", // Admin SignIn page
+    "/admin", // Admin Dashboard or Admin landing page
+    "/dashboard", // Admin Dashboard
+    "/category", // Admin Category management page
+    "/checkout", // Checkout page
+    "/profile", // Profile page
+    "/AddProduct",
   ];
 
-  // If the current path is in the hideNavAndFooterPaths array, do not show Nav and Footer
   const showNavAndFooter = !hideNavAndFooterPaths.includes(location.pathname);
-
-
-  // console.log('Current Path:', location.pathname); 
 
   return (
     <>
@@ -62,6 +61,7 @@ function App() {
       <Router>
         <LayoutWrapper>
           <Routes>
+            {/* HomePage should load at root path */}
             <Route path="/HomePage" element={<HomePage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
@@ -83,7 +83,6 @@ function App() {
             <Route path="/product/:id" element={<Productpage />} />
             <Route path="/CheckOut" element={<CheckOut />} />
             <Route path="/login" element={<LoginForm />} />
-
           </Routes>
         </LayoutWrapper>
       </Router>
