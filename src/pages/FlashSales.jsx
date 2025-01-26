@@ -85,17 +85,17 @@ const FlashSales = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const merchantData = JSON.parse(localStorage.getItem("merchantResponse"));
+      // const merchantData = JSON.parse(localStorage.getItem("merchantResponse"));
 
-      if (!merchantData) {
-        setErrorMessage("No merchant data found.");
-        setLoading(false);
-        return;
-      }
+      // if (!merchantData) {
+      //   setErrorMessage("No merchant data found.");
+      //   setLoading(false);
+      //   return;
+      // }
 
       try {
         const categoryResponse = await axios.get(
-          `${Base_url}/categories?merchant_id=${merchantData.id}`
+          `${Base_url}/categories?merchant_id=675ff0a456d563e5aeba86ea`
         );
         setCategories(categoryResponse.data);
 
