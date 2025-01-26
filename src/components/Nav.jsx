@@ -48,7 +48,7 @@ const Nav = () => {
       <div className="flex gap-2 p-1 flex-grow max-w-3/4">
         <input
           type="search"
-          placeholder="Search products, brands, and categories"
+          placeholder="Search products, brands and categories"
           className="p-2 w-full rounded border"
         />
         <button className="bg-orange-500 text-white p-2 rounded">Search</button>
