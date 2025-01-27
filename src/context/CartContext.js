@@ -16,12 +16,11 @@ export const CartProvider = ({ children }) => {
     return discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
   };
 
+  // Fetch cart based on userId
   const fetchCart = useCallback(async () => {
     if (!userId) return;
     try {
-      const response= await axios.get(`${Base_url}/carts?user_id=${userId}`);
-      // console.log(response.data)
-      
+      const response = await axios.get(`${Base_url}/carts?user_id=${userId}`);
       const cartItemsFromApi = response.data.cart_items || [];
       const cartItemsWithDetails = await Promise.all(
         cartItemsFromApi.map(async (item) => {
@@ -55,6 +54,26 @@ export const CartProvider = ({ children }) => {
       return user;
     }
     return null;
+  };
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      getUserData(); // Update userId when localStorage changes
+    };
+
+    // Add event listener for localStorage changes
+    window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Remove user data from localStorage
+    setUserId(null); // Reset userId in CartProvider
+    console.log("User logged out");
   };
 
   useEffect(() => {
@@ -106,6 +125,7 @@ export const CartProvider = ({ children }) => {
 
       setCartItems(savedCart);
       localStorage.setItem("cartItems", JSON.stringify(savedCart));
+      alert("Item added to cart successfully!");
       return;
     }
 
@@ -205,7 +225,19 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <Cartcontext.Provider value={{ cartItems, totalAmount, loading, addToCart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity }}>
+    <Cartcontext.Provider value={{
+      cartItems,
+      totalAmount,
+      loading,
+      addToCart,
+      removeFromCart,
+      clearCart,
+      increaseQuantity,
+      decreaseQuantity,
+      userId,
+      setUserId,
+      handleLogout
+    }}>
       {children}
     </Cartcontext.Provider>
   );

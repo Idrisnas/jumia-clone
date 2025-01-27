@@ -18,18 +18,18 @@ const CategoryPage = () => {
 
   useEffect(() => {
     const fetchCategoryDetails = async () => {
-      const merchantData = JSON.parse(localStorage.getItem("merchantResponse"));
+      // const merchantData = JSON.parse(localStorage.getItem("merchantResponse"));
 
-      if (!merchantData) {
-        setErrorMessage("No merchant data found.");
-        setLoading(false);
-        return;
-      }
+      // if (!merchantData) {
+      //   setErrorMessage("No merchant data found.");
+      //   setLoading(false);
+      //   return;
+      // }
 
       try {
         const productResponse = await axios.get(`${Base_url}/products`, {
           params: {
-            merchant_id: merchantData.id,
+            merchant_id: "675ff0a456d563e5aeba86ea",
             category_id: categoryId,
           },
         });

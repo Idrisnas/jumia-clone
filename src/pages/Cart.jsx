@@ -4,48 +4,56 @@ import { MdDeleteOutline } from "react-icons/md";
 import { Cartcontext } from "../context/CartContext";
 
 const Cart = () => {
-  const { cartItems, totalAmount, removeFromCart, clearCart, increaseQuantity, decreaseQuantity, loading, userId } = useContext(Cartcontext);
+  const { cartItems, totalAmount, removeFromCart, clearCart, increaseQuantity, decreaseQuantity, loading, userId, handleLogout } = useContext(Cartcontext);
   const [loadingAction, setLoadingAction] = useState(false);
   const navigate = useNavigate();
 
+  // Remove item from cart
   const handleRemoveFromCart = async (id) => {
     setLoadingAction(true);
     await removeFromCart(id);
     setLoadingAction(false);
   };
 
+  // Handle checkout process
   const handleCheckout = async () => {
     if (!userId) {
       alert("Please log in to proceed to checkout.");
+      navigate('/profile');
       return;
     }
-
+  
     setLoadingAction(true);
     setTimeout(() => {
       setLoadingAction(false);
+      navigate('/checkout');
     }, 2000);
   };
 
-  if (loading) {
-    return <div>Loading your cart...</div>;
-  }
+  // Loading state
+  // if (loading) {
+  //   return <div className="h-screen mt-20 flex justify-center items-center text-center text-2xl">Loading your cart...</div>;
+  // }
 
+  // Empty cart state
   if (cartItems.length === 0) {
     return (
       <div className="h-screen flex justify-center items-center text-center text-2xl mt-20">
         <p>
           Your cart is empty.{" "}
-          <Link to="/" className="text-blue-500">Go back to Shop</Link>
+          <Link to="/Homepage" className="text-blue-500">Go back to Shop</Link>
         </p>
       </div>
     );
   }
 
+  // Calculate discounted price
   const calculateDiscountedPrice = (price, discount) => {
     const originalPrice = typeof price === "string" ? parseFloat(price.replace(/,/g, "")) : price;
     return discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
   };
 
+  // Calculate the total amount
   const totalAmountWithDiscount = cartItems.reduce((total, item) => {
     const discountedPrice = calculateDiscountedPrice(item.price, item.discount);
     return total + discountedPrice * item.quantity;

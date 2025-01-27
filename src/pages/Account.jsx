@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { LiaUserCheckSolid } from "react-icons/lia";
 import { LuPackage2 } from "react-icons/lu";
 import { FaInbox, FaRegHeart } from "react-icons/fa";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { FaTicket } from "react-icons/fa6";
+import { Cartcontext } from "../context/CartContext";
+import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 
 const Account = ({ handleModalToggle, isModalOpen }) => {
   const [user, setUser] = useState(null);
+  const { handleLogout } = useContext(Cartcontext);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -24,10 +26,9 @@ const Account = ({ handleModalToggle, isModalOpen }) => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    console.log("User logged out");
+  const handleUserLogout = () => {
+    handleLogout(); // Use handleLogout from CartProvider
+    setUser(null); // Reset user state
   };
 
   return (
@@ -94,7 +95,7 @@ const Account = ({ handleModalToggle, isModalOpen }) => {
               <div className="text-center items-center border-t-2 border-gray-200">
                 <Link
                   to="#"
-                  onClick={handleLogout}
+                  onClick={handleUserLogout}
                   className="P-4 text-orange-500 hover:bg-gray-300 text-sm mt-3"
                 >
                   LOGOUT

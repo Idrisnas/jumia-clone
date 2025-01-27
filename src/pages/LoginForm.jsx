@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { Cartcontext } from "../context/CartContext";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaFacebook } from 'react-icons/fa';
@@ -6,12 +7,12 @@ import { FaFacebook } from 'react-icons/fa';
 const Base_url = "http://ecommerce.reworkstaging.name.ng/v2";
 
 const LoginForm = () => {
+  const { setUserId } = useContext(Cartcontext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   // Email validation regex
   const validateEmail = (email) => {
@@ -19,7 +20,6 @@ const LoginForm = () => {
     return regex.test(email);
   };
 
-  // Check if the user exists
   const checkUserExists = async (email) => {
     try {
       const response = await axios.get(`${Base_url}/users?email=${email}`);
@@ -30,33 +30,32 @@ const LoginForm = () => {
     }
   };
 
-  // Log in the user
   const loginUser = async () => {
     if (!email || !password) {
       setErrorMessage("Email and password are required.");
       return;
     }
-  
+
     if (!validateEmail(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
-  
+
     const userExists = await checkUserExists(email);
     if (!userExists) {
       setErrorMessage("User does not exist.");
       setSuccessMessage('');
       return;
     }
-  
+
     try {
       const response = await axios.post(`${Base_url}/users/login`, {
         email: email,
         password: password,
       });
-  
+
       console.log('Login response:', response.data);
-      
+
       if (response.data && response.data.msg === "Invalid username or password") {
         setErrorMessage("Invalid username or password.");
         setSuccessMessage('');
@@ -65,16 +64,19 @@ const LoginForm = () => {
         setSuccessMessage('Logged in successfully!');
         setErrorMessage('');
         
-       
-        localStorage.setItem("user", JSON.stringify({
+        const userData = {
           id: response.data.id,
           first_name: response.data.first_name,
           last_name: response.data.last_name,
           email: response.data.email,
           phone: response.data.phone,
-        }));
-  
-        navigate('/HomePage'); 
+        };
+
+        // Store user data in localStorage and update context
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUserId(response.data.id); // Update userId in context
+
+        navigate('/HomePage'); // Navigate to homepage after login
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -82,7 +84,6 @@ const LoginForm = () => {
       setSuccessMessage('');
     }
   };
-  
 
   return (
     <div className="my-7 flex flex-col items-center mt-24 w-[90%] sm:w-[80%] m-auto p-6 rounded-lg shadow-lg">
@@ -95,7 +96,7 @@ const LoginForm = () => {
       </div>
       <h1 className="text-2xl font-bold ">Welcome to Jumia</h1>
       <p className="text-center ">
-        Type your e-mail or Password  to log in your Jumia account.
+        Type your e-mail or Password to log in to your Jumia account.
       </p>
 
       <div className="bg-white p-8 rounded-lg shadow-lg w-[80%] max-w-lg  my-2">
@@ -111,7 +112,7 @@ const LoginForm = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-               placeholder="Enter your email"
+              placeholder="Enter your email"
               className="w-full p-4 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
             />
           </div>
@@ -133,7 +134,7 @@ const LoginForm = () => {
         <div className="mt-6 space-y-4">
           <button
             onClick={loginUser}
-             className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition duration-200"
+            className="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600 transition duration-200"
           >
             Login
           </button>
